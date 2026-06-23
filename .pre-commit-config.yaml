@@ -3,6 +3,10 @@ repos:
     hooks:
       - id: commit-msg
         name: enforce commit format (AI flag required)
-        entry: bash -c 'if ! grep -qE "\[AI:(YES|NO)\]" "$1"; then echo "ERROR: Commit must include [AI:YES] or [AI:NO]" && exit 1; fi' --
         language: system
         stages: [commit-msg]
+        entry: >-
+          bash -c
+          'if ! grep -qE "\[AI:(YES|NO)\]" "$1";
+          then echo "ERROR: Commit must include [AI:YES] or [AI:NO]" && exit 1;
+          fi' --
