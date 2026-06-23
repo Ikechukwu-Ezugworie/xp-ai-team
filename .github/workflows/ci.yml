@@ -1,0 +1,50 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - run: cd backend && pip install -r requirements.txt
+      - run: cd backend && flake8 app/ tests/
+      - run: cd backend && pytest --cov=app --cov-report=xml --cov-report=term
+      - uses: SonarSource/sonarqube-scan-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >
+            -Dsonar.projectKey=chat_app_backend_treatment
+            -Dsonar.sources=backend/app/
+            -Dsonar.tests=backend/tests/
+            -Dsonar.python.coverage.reportPaths=backend/coverage.xml
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: cd frontend && npm ci
+      - run: cd frontend && npm run lint
+      - run: cd frontend && npm test -- --coverage --watchAll=false
+      - uses: SonarSource/sonarqube-scan-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >
+            -Dsonar.projectKey=chat_app_frontend_treatment
+            -Dsonar.sources=frontend/src/
+            -Dsonar.tests=frontend/__tests__/
+            -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info

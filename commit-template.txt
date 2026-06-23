@@ -1,0 +1,1 @@
+SPRINT<num>-STORY<num>-[AI:YES|NO]-<description>
