@@ -14,9 +14,15 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      - run: cd backend && pip install -r requirements.txt
-      - run: cd backend && flake8 app/ tests/
-      - run: cd backend && pytest --cov=app --cov-report=xml --cov-report=term
+      - name: Install deps
+        run: |
+          cd backend
+          pip install -r requirements.txt
+          pip install flake8        # ← add this line
+      - name: Lint
+        run: cd backend && flake8 app/ tests/
+      - name: Test with coverage
+        run: cd backend && pytest --cov=app --cov-report=xml --cov-report=term
       - uses: SonarSource/sonarqube-scan-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
