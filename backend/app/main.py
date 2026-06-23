@@ -23,4 +23,4 @@ async def websocket_route(websocket):
 
 @app.get("/health")
 async def health_check():
-    return {"status": "ok", "service": "chat-backend"}                  
+    return {"status": "ok", "service": "chat-backend"}

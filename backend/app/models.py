@@ -28,3 +28,4 @@ class Message(Base):
     timestamp = Column(DateTime, default=datetime.utcnow)
     user = relationship("User")
     room = relationship("Room")
+    
