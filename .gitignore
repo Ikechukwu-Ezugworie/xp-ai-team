@@ -11,4 +11,4 @@ build/
 *.log
 data/*.csv
 data/*.json
-data/*.db
+data/*.dbchat.db
