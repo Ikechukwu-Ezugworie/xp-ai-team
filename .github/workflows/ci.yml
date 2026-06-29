@@ -62,5 +62,5 @@ jobs:
           args: >
             -Dsonar.projectKey=chat_app_frontend_treatment
             -Dsonar.sources=frontend/src/
-            -Dsonar.tests=frontend/__tests__/
+            -Dsonar.tests=frontend/src/__tests__/
             -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info
