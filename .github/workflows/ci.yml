@@ -64,5 +64,6 @@ jobs:
             -Dsonar.organization=ikechukwu-ezugworie
             -Dsonar.projectKey=chat_app_frontend_treatment
             -Dsonar.sources=frontend/src/
+            -Dsonar.exclusions=frontend/src/__tests__/**
             -Dsonar.tests=frontend/src/__tests__/
             -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info
