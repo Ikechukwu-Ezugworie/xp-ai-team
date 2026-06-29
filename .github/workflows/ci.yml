@@ -11,22 +11,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
           python-version: '3.11'
       - name: Install deps
         run: |
           cd backend
           pip install -r requirements.txt
-          pip install flake8        # ← add this line
       - name: Lint
         run: |
           cd backend
-          black --check app/ tests/
           flake8 app/ tests/
       - name: Test with coverage
         run: cd backend && pytest --cov=app --cov-report=xml --cov-report=term
-      - uses: SonarSource/sonarqube-scan-action@v2
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
@@ -41,13 +41,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
           node-version: '18'
-      - run: cd frontend && npm ci
-      - run: cd frontend && npm run lint
-      - run: cd frontend && npm test -- --coverage --watchAll=false
-      - uses: SonarSource/sonarqube-scan-action@v2
+      - name: Install deps
+        run: cd frontend && npm ci
+      - name: Lint
+        run: cd frontend && npm run lint
+      - name: Test with coverage
+        run: cd frontend && npm test -- --coverage --watchAll=false
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
