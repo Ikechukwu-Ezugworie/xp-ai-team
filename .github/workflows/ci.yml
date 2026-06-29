@@ -47,7 +47,7 @@ jobs:
         with:
           node-version: '18'
       - name: Install deps
-        run: cd frontend && npm ci
+        run: cd frontend && npm ci --legacy-peer-deps
       - name: Lint
         run: cd frontend && npm run lint
       - name: Test with coverage
