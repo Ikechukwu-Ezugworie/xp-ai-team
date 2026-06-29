@@ -21,14 +21,26 @@ class Room(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), unique=True, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
+    members = relationship("RoomMember", back_populates="room", cascade="all, delete-orphan")
+    messages = relationship("Message", back_populates="room", cascade="all, delete-orphan")
+
+
+class RoomMember(Base):
+    __tablename__ = "room_members"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    room_id = Column(Integer, ForeignKey("rooms.id"), nullable=False)
+    joined_at = Column(DateTime, default=datetime.utcnow)
+    user = relationship("User")
+    room = relationship("Room", back_populates="members")
 
 
 class Message(Base):
     __tablename__ = "messages"
     id = Column(Integer, primary_key=True, index=True)
     content = Column(Text, nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    room_id = Column(Integer, ForeignKey("rooms.id"))
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    room_id = Column(Integer, ForeignKey("rooms.id"), nullable=False)
     timestamp = Column(DateTime, default=datetime.utcnow)
     user = relationship("User")
-    room = relationship("Room")
+    room = relationship("Room", back_populates="messages")

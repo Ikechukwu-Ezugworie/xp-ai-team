@@ -1,10 +1,15 @@
 import os
 
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
 
+from .database import engine, get_db
+from .models import Base
 from .routers import auth, messages, rooms
 from .websocket import websocket_endpoint
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Chat App Backend", version="1.0.0")
 
@@ -19,13 +24,13 @@ app.add_middleware(
 )
 
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
-app.include_router(messages.router, prefix="/messages", tags=["messages"])
 app.include_router(rooms.router, prefix="/rooms", tags=["rooms"])
+app.include_router(messages.router, prefix="/messages", tags=["messages"])
 
 
-@app.websocket("/ws")
-async def websocket_route(websocket):
-    await websocket_endpoint(websocket)
+@app.websocket("/ws/{room_id}")
+async def ws_route(websocket: WebSocket, room_id: int, db: Session = Depends(get_db)):
+    await websocket_endpoint(websocket, room_id, db)
 
 
 @app.get("/health")
