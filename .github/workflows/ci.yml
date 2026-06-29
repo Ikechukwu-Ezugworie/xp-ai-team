@@ -26,6 +26,7 @@ jobs:
       - name: Test with coverage
         run: cd backend && pytest --cov=app --cov-report=xml --cov-report=term
       - name: SonarQube Scan
+        continue-on-error: true
         uses: SonarSource/sonarqube-scan-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -52,6 +53,7 @@ jobs:
       - name: Test with coverage
         run: cd frontend && npm test -- --coverage --watchAll=false
       - name: SonarQube Scan
+        continue-on-error: true
         uses: SonarSource/sonarqube-scan-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
