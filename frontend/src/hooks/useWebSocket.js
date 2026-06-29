@@ -12,13 +12,13 @@ export function useWebSocket(roomId, token, onMessage) {
     ws.current.onopen = () => setConnected(true);
     ws.current.onclose = () => setConnected(false);
     ws.current.onmessage = (e) => {
-      try { onMessage(JSON.parse(e.data)); } catch {}
+      try { onMessage(JSON.parse(e.data)); } catch (_e) { /* ignore malformed frames */ }
     };
 
     return () => {
       ws.current?.close();
     };
-  }, [roomId, token]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [roomId, token]); // onMessage intentionally excluded — callers pass inline functions
 
   const send = useCallback((payload) => {
     if (ws.current?.readyState === WebSocket.OPEN) {
